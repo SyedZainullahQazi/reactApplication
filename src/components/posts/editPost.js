@@ -1,55 +1,54 @@
-//Imports the Hooks from React Core
-import {useContext} from "react";
-import {useParams,useNavigate} from "react-router-dom";
+//Imports Components from React
 import {useFormik} from 'formik';
+import {useContext} from "react";
 import * as Yup from 'yup';
+import { useLocation,useNavigate } from 'react-router-dom';
 
-//Imports The internal and external Styles
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "../styles/editPost.css"
+//Imports Components
+import PostContext from "../../context/Posts/PostContext.js";
+import { AuthContext } from '../../context/Comments/authContext';
+
+//Imports UI Dependencies
 import Button from 'react-bootstrap/Button';
-
-//Imports components
-import PostContext from "../context/PostContext.js";
-import { AuthContext  } from '../context/Comments/authContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "../../styles/editPost.css"
 
 
-export default function WritePost(props)
+
+
+export default function EditPost(props)
 {   
-    //gets the userId from params
-    let { userid } = useParams();
-    
-    //tries UserId if value is avaliable
-    //converts it to integer type
-    try
-    {
-    userid=parseInt(userid);
-    }
-    catch(e)
-    {
-        console.log(e);
-    }
 
-    //uses navigate to navigate to another page
-    const navigate=useNavigate();
-
-    //Fetches Post data from Context API
-    //and assigns variable the value assets of PostContext
+    //Fetches Post Data From The PostContext
+    //Where Post Data is Fetched 
     const ContextFetchedPostData=useContext(PostContext);
     const postData=ContextFetchedPostData.postData;
-    const updatePostData=ContextFetchedPostData.updatePost;
+    // const updatePostData=ContextFetchedPostData.updatePost;
 
-    //Login Credentials Redemption from context
+
+    //A useNavigate Hook is called to provide navigation
+    //Between Pages
+    const navigate=useNavigate();
+
+    //Login Credentials Redemption from AuthContext
+    //Using context api to share auth state between 
+    //Components
     const {userCredentials} = useContext(AuthContext);
 
-    console.log("hi");
+    //Use Location to Get the State Object from the 
+    //Posts page where state object was sent through to={state:{}};
+    //stateData holds posts attributes, id,title,body,userid etc
+    const location = useLocation();
+    const stateData = location.state;
+
+
 
     //Using Formik Instead of useState
     const formik=useFormik({
 
         initialValues:{
-            title:"",
-            article:""
+            title:stateData?stateData.title:"",
+            article:stateData?stateData.body:"",
         },
 
         //Validation On Title and Post Content 
@@ -60,21 +59,21 @@ export default function WritePost(props)
 
         //Update the Values on Submit
         onSubmit:(values)=>{
-            const updatedArr= [...(postData)];
-            const newId = postData.reduce((maxId, currentObj) => {
-                return currentObj.id > maxId ? currentObj.id : maxId;
-              }, -Infinity)+1;
-            
-            updatedArr.unshift({userId:userid,id:newId,title:values.title,body:values.article});
-            updatePostData(updatedArr);
+            for (const element of postData) {
+                if(element.id===stateData.id)
+                {
+                    element.body=values.article;
+                    element.title=values.title;
+                }   
+            }
+            alert("Comment Updated Successfully");
         },
     });
 
-    
-    //Conditonal rendering of the Html/JSX on page
-        if(userCredentials)
-        {
-    return (
+    //Conditionally Renders the UI
+    if(userCredentials)
+    {
+      return (
     <>
         <div className="row justify-content-center upper-div">
             
@@ -84,7 +83,7 @@ export default function WritePost(props)
 
                     <div className="row justify-content-center">
                         <div className="col-6">
-                            <h1 className="edit-post-heading">NEW POST </h1>
+                            <h1 className="edit-post-heading">EDIT POST </h1>
                         </div>
                     </div>
 
@@ -105,7 +104,7 @@ export default function WritePost(props)
 
                                     <div className="row justify-content-center">
                                         <div className='col-4 edit-button'>
-                                            <Button variant="outline-info" type="submit">Publish</Button>
+                                            <Button variant="outline-info" type="submit">EDIT</Button>
                                         </div>
                                     </div>
                                 </form>
@@ -121,7 +120,7 @@ export default function WritePost(props)
     }
     else
     {
-        navigate("/");
+        navigate("/")
     }
 
 }

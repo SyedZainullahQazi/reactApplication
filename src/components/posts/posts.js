@@ -2,13 +2,17 @@
 import {Link} from 'react-router-dom';
 import {useContext} from 'react';
 
+//Imports PostContext Module to use post data here
+import PostContext from '../../context/Posts/PostContext';
+import { AuthContext } from '../../context/Comments/authContext';
+
+
 //Imports External and Internal UI Dependencies
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../styles/posts.css"
+import "../../styles/posts.css"
 import Button from 'react-bootstrap/Button';
 
-//Imports PostContext Module to use post data here
-import PostContext from '../context/PostContext';
+
 
 
 
@@ -22,8 +26,11 @@ export default function Posts(props){
     const postData=FetchedDataFromPostContext.postData;
     const updatePostData=FetchedDataFromPostContext.updatePost;
 
-    //Gets Id from the posts Body through props
-    const id=parseInt(props.userId);
+    //Login Credentials Redemption from context
+    const {userCredentials} = useContext(AuthContext);
+
+    //Gets current ID of the user 
+    const id=userCredentials.id;
 
     //function to conditionally render editPost Button
     const editPost=()=>

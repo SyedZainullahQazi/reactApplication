@@ -2,14 +2,16 @@
 import { useLocation,useNavigate } from 'react-router-dom';
 import {useEffect,useState,useContext} from "react";
 
+//COMPONENTS TO BE Ussed
+import Comments from "./Comments.js";
+import { AuthContext } from '../../context/Comments/authContext';
+import CommentsAPI from '../../API/CommentsAPI';
+
 //EXTERNAL AND INTERNAL UI DEPENDENCIES
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import "../../styles/comments-body.css"
 
-//COMPONENTS TO BE Ussed
-import Comments from "./Comments.js";
-import { AuthContext } from '../../context/Comments/authContext';
 
 
 export default function CommentBody(props){
@@ -26,18 +28,39 @@ export default function CommentBody(props){
     let [newCommentTitle,updateNewCommentTitle]=useState("");
 
     //Calling Authentication Context
-    const { userCredentials} = useContext(AuthContext);
+    const { userCredentials,userData} = useContext(AuthContext);
 
     //useNavigate to naviagte to homepage in case authentication fails
     const navigate=useNavigate();
 
 
 
-    //Fetches the Comments Data Relevent to the Post and Renders it
-    useEffect(()=>{
-        fetch("https://jsonplaceholder.typicode.com/posts/"+(stateData?stateData.postid:"")+"/comments").
-        then((response)=>response.json()).
-        then((dataFetched)=>updateComments(dataFetched));},[(stateData?stateData.postid:"")]);
+    // Fetches the Comments Data Relevant to the Post and Renders it
+  useEffect(() => {
+    // Fetch the comments data from localStorage if available
+    const storedComments = localStorage.getItem(`comments_${stateData.postid}`);
+    if (storedComments) {
+      updateComments(JSON.parse(storedComments));
+    } else {
+      // If not available, fetch the data from the API
+      CommentsAPI(stateData)
+        .then((response) => response.json())
+        .then((dataFetched) => {
+          updateComments(dataFetched);
+          // Store the fetched data in localStorage
+          localStorage.setItem(`comments_${stateData.postid}`, JSON.stringify(dataFetched));
+        });
+    }
+  }, [stateData.postid]);
+
+
+
+
+    // //Fetches the Comments Data Relevent to the Post and Renders it
+    // useEffect(()=>{
+    //     CommentsAPI(stateData).
+    //     then((response)=>response.json()).
+    //     then((dataFetched)=>updateComments(dataFetched));},[(stateData?stateData.postid:"")]);
 
     //Comments Render On the Comments Body
     const renderComments=()=>
@@ -45,7 +68,7 @@ export default function CommentBody(props){
         const components=[];
         for(let i=0;i<comments.length;i++)
         {
-            components.push(<Comments allComments={comments} upComments={updateComments} dataForComment={comments[i]} key={comments[i].id} userId={stateData.userid} users={props.users} /> );
+            components.push(<Comments allComments={comments} upComments={updateComments} dataForComment={comments[i]} key={comments[i].id} userId={stateData.userid} users={userData} /> );
         }
         return components;
     }
@@ -65,12 +88,12 @@ export default function CommentBody(props){
     //commentOnClick
     const handleCommentBtnClick=()=>
     {
-        let email="";
-        for(let element of props.users)
+        let anEmail="";
+        for(let element of userData)
         {
-            if(element.id===stateData.userid)
+            if(element.id===userCredentials.id)
             {
-                email=element.email;
+                anEmail=element.email;
                 break;
             }
         }
@@ -85,11 +108,16 @@ export default function CommentBody(props){
             id:newId,
             name:newCommentTitle,
             body:newCommentBody,
-            email:email,
+            email:anEmail,
         }
-        let addedCommentArr=[...(comments)];
+        let addedCommentArr = [...comments];
         addedCommentArr.unshift(aNewComment);
         updateComments(addedCommentArr);
+
+        // Update localStorage with the updated comments array
+        localStorage.setItem(`comments_${stateData.postid}`, JSON.stringify(addedCommentArr));
+
+        alert('Commented Successfully');
     }
 
     //Conditional Render of the Comment Section if User

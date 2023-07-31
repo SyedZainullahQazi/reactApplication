@@ -45,7 +45,7 @@ export default function Comments(props){
     }
     const handleDeleteBtn=()=>
     {
-        let userEmail=props.dataForComment.email;
+        // let userEmail=props.dataForComment.email;
         const index=props.allComments.findIndex((element)=>element.email===props.dataForComment.email);
         const updatedArray=[...(props.allComments)];
         updatedArray.splice(index,1);

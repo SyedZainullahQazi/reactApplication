@@ -1,23 +1,36 @@
 //React Modules Imports
-import {useState,useContext} from "react";
+import {useState,useContext,useEffect,useRef} from "react";
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {useFormik} from 'formik';
 import * as Yup from 'yup'
 
-//External UI Modules 
+//Custom File Imports
+import { AuthContext } from '../context/Comments/authContext';
+
+//External And Internal UI Dependencies 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
-
-//Internal Stylesheet
 import "../styles/login.css"
 
-//Modules Import
-import { AuthContext } from '../context/Comments/authContext';
+
 
 
 export default function Login(props)
 {
+
+    const buttonRef = useRef(null);
+
+  // useEffect will run when the component is mounted
+    useEffect(() => {
+        // Check if the button ref is assigned
+        if (buttonRef.current) {
+        // Simulate a click on the button
+        buttonRef.current.click();
+        }
+    }, []);
+
+
     //CredWarning StateVariable to Show Error
     //Message If Credentials Doesn't Matches 
     const [credWarning,setCredWarning]=useState();
@@ -27,7 +40,7 @@ export default function Login(props)
     const navigate = useNavigate();
 
     //Login Credentials Redemption from context
-    const { loginUser,userCredentials} = useContext(AuthContext);
+    const { loginUser,userCredentials,userData,addUserData} = useContext(AuthContext);
     
 
     //Formik To Validate and handle On Submit
@@ -46,13 +59,13 @@ export default function Login(props)
         //checks if the Values of email and passwords
         //Matches Any usersList Passed in Props from App.
         onSubmit:(values)=>{
-            for(let i=0;i<props.users.length;i++)
+            for(let i=0;i<userData.length;i++)
             {
-                if(values.emailVal===props.users[i].email && 
-                values.passwordVal===props.users[i].password)
+                if(values.emailVal===userData[i].email && 
+                values.passwordVal===userData[i].password)
                 {
-                    loginUser(props.users[i].id,values.passwordVal);
-                    navigate('/posts/'+ props.users[i].id);
+                    loginUser(userData[i].id,values.passwordVal);
+                    navigate('/posts');
                     setCredWarning("");
                 }
             }
@@ -62,6 +75,10 @@ export default function Login(props)
             
         },
     });
+    const redirectPosts=()=>
+    {
+        navigate("/posts/"+userCredentials);
+    }
 
     //Conditional Rendering  -  If Credentials Of users are not already set shows
     //Login Page for user to Register Otherwise ,redirects him to posts.
@@ -121,6 +138,8 @@ export default function Login(props)
     //Navigated To posts if credientials are already Set.
     else 
     {
-        navigate('/posts/'+userCredentials.id);
+      return (<button ref={buttonRef} onClick={() => {navigate("/posts");}}>
+      Click Me
+    </button>)
     }
 }

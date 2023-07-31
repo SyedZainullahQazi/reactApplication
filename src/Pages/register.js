@@ -1,6 +1,7 @@
 //react components
 import {Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import {useContext,useRef,useEffect} from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -11,11 +12,28 @@ import Form from 'react-bootstrap/Form';
 import "../styles/login.css";
 import "../styles/register.css"
 
+//Importing Components
+import { AuthContext } from '../context/Comments/authContext';
+
 
 export default function Register(props)
 {
+    const buttonRef = useRef(null);
+
+  // useEffect will run when the component is mounted
+  useEffect(() => {
+    // Check if the button ref is assigned
+    if (buttonRef.current) {
+      // Simulate a click on the button
+      buttonRef.current.click();
+    }
+  }, []);
+
     //Use navigate hook to navigate between pages
     const navigate=useNavigate();
+
+    //Calling in User Credential Context
+    const {userCredentials,loginUser,userData,addUserData} = useContext(AuthContext);
 
     //formik instead of state to handle inputs State
     //to Handle onSubmit of register button 
@@ -35,22 +53,29 @@ export default function Register(props)
         }),
 
         onSubmit:(values)=>{
-            const updatedData=[...(props.users),{
+            const newId = userData.reduce((maxId, currentObj) => {
+                return currentObj.id > maxId ? currentObj.id : maxId;
+              }, -Infinity)+1;
+
+            const updatedData=[...(userData),{
                 name:values.nameVal,
                 email:values.emailVal,
                 password:values.passwordVal,
-                id:props.users.length,
+                id:newId,
             }];
-            props.updateUsers(updatedData);
-            console.log(updatedData);
+            loginUser(newId,values.passwordVal);
+            addUserData(updatedData);
             alert("Successfully Registerd");
-            navigate("/");
+            navigate("/posts");
         },
     });
 
     
 
 //renders the component structure
+if(!(userCredentials))
+{
+
     return (
             <>
                 <div className='row justify-content-center main-division'>
@@ -111,4 +136,9 @@ export default function Register(props)
                 </div>
             </>
             );
+    }
+    else 
+    {
+        return (<button ref={buttonRef} onClick={() => {navigate("/posts");}}></button>)
+    }
 }

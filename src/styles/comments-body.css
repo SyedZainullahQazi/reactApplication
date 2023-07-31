@@ -16,3 +16,11 @@
 {
     padding:3vh
 }
+.write-comment-own
+{
+    background-color: rgb(48, 80, 72);
+    border-radius: 10vh;
+    border:5px #bd3982 solid;
+    margin-top:3vh;
+    padding-top:3vh;
+}
