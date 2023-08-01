@@ -1,0 +1,37 @@
+.wrapping-div
+{
+    background-color: black;
+    border-radius: 10vh;
+    border:5px #399cbd solid;
+    margin-top:3vh;
+}
+
+.title
+{
+    color:grey;
+    margin-top:2vh;
+    margin-bottom: 2vh;
+}
+.article
+{
+    color:grey;
+    margin-top:2vh;
+    margin-bottom: 2vh;
+}
+.post-id
+{
+    color:grey;
+    margin-top:2vh;
+    margin-bottom: 2vh;
+}
+.user-id
+{
+    color:grey;
+    margin-top:2vh;
+    margin-bottom: 2vh;}
+
+.user-control
+{
+    margin-bottom:3vh;
+    margin-top:2vh;
+}

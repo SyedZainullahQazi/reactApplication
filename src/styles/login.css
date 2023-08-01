@@ -1,0 +1,50 @@
+.login-heading
+{
+    background-color: black;
+    font-size:6vh;
+    font-weight: bold;
+    text-align: center;
+    color:white;
+    margin-top:4vh;
+}
+.login-subtext
+{
+    font-size:2.5vh;
+    color:grey;
+    font-weight: bold;
+    margin-left:3.5vh;
+}
+.wrapper-div{
+    background-color: black;
+    border-radius: 10vh;
+    border:6px #399cbd solid;
+    margin-top:10vh;
+}
+.login-input
+{
+    border-radius: 15vh;
+    border-color: #399cbd;
+    border:3px #399cbd solid;
+    margin-top:7vh;
+    width:40vh;
+    height:6.5vh;
+    text-align: center;
+}
+
+.register
+{
+    color:grey;
+    margin-left:2.5vh;
+    margin-bottom:3vh;  
+}
+
+.div-wrapper
+{
+    margin-bottom:3vh;
+    margin-top:3vh;
+}
+.button-div
+{
+    padding-left:5vh;
+}
+

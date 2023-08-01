@@ -1,0 +1,26 @@
+.write-comment
+{
+    background-color: black;
+    border-radius: 10vh;
+    border:5px #399cbd solid;
+    margin-top:3vh;
+    padding-top:3vh;
+}
+
+.comment-btn-div
+{
+    padding:3vh;
+}
+
+.comment-input-div
+{
+    padding:3vh
+}
+.write-comment-own
+{
+    background-color: rgb(48, 80, 72);
+    border-radius: 10vh;
+    border:5px #bd3982 solid;
+    margin-top:3vh;
+    padding-top:3vh;
+}
