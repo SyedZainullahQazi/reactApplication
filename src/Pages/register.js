@@ -5,16 +5,15 @@ import {useContext,useRef,useEffect} from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
+//Importing Components - Custom File Imports
+import { AuthContext } from '../context/Auth/authContext';
+
 //external and Internal UI dependencies
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "../styles/login.css";
 import "../styles/register.css"
-
-//Importing Components
-import { AuthContext } from '../context/Comments/authContext';
-
 
 export default function Register(props)
 {
@@ -28,13 +27,9 @@ export default function Register(props)
       buttonRef.current.click();
     }
   }, []);
-
-    //Use navigate hook to navigate between pages
     const navigate=useNavigate();
-
     //Calling in User Credential Context
     const {userCredentials,loginUser,userData,addUserData} = useContext(AuthContext);
-
     //formik instead of state to handle inputs State
     //to Handle onSubmit of register button 
     //to Valudate the Written text
@@ -69,9 +64,6 @@ export default function Register(props)
             navigate("/posts");
         },
     });
-
-    
-
 //renders the component structure
 if(!(userCredentials))
 {
