@@ -1,9 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 
-import {
-  setUserDataOnLocalStorage,
-  getUserDataFromLocalStorage,
-} from "../../utils/Users/usersLocalStorage";
+import {setUserDataOnLocalStorage,getUserDataFromLocalStorage,} from "../../utils/Users/usersLocalStorage";
 
 export const AuthContext = createContext();
 
@@ -18,7 +15,6 @@ export default function AuthProvider(props) {
     },
   ]);
   // Function to update the usersData in Parent
-  // in Order To register More Users at Runtime
   const addUserData = (updatedData) => {
     setUserData(updatedData);
     setUserDataOnLocalStorage("userData", updatedData);

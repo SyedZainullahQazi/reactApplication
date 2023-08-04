@@ -1,9 +1,9 @@
-export function getUserDataFromLocalStorage(name)
+export const getUserDataFromLocalStorage=(name)=>
 {
     return (localStorage.getItem(name));
 }
 
-export function setUserDataOnLocalStorage(name,data)
+export const setUserDataOnLocalStorage=(name,data)=>
 {
     return (localStorage.setItem(name, JSON.stringify(data)));
 }

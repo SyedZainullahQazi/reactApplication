@@ -1,82 +1,62 @@
-//React Components
 import { useState } from "react";
 
-//UI External and Internal Dependencies
+import {HandleDeleteBtn,HandleEditBtn,HandleUpdateBtn,FindEmail} from "../../helper/comments/CommentHelper"
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/posts.css";
 import Button from "react-bootstrap/Button";
 
-export default function Comments(props) {
+export default function Comments(props) 
+{
   //Takes the userId from CommentBody
   const userid = parseInt(props.userId);
-  //State Variable To Edit Comments
   const [editFlag, updateEditFlag] = useState(true);
-  //State Variable For Input
   const [commentBody, setCommentBody] = useState(props.dataForComment.body);
-  //Handler Function for Comment Body Input
+  
   const handleCommentBody = (e) => {
     setCommentBody(e.target.value);
   };
-  //Delete Comment 
+
   const deleteComment = () => {
-    let userEmail = findEmail(userid);
+    let userEmail = FindEmail(userid,props.users);
 
     if (props.dataForComment.email === userEmail) {
       return (
-        <Button variant="outline-danger" onClick={handleDeleteBtn}>
+        <Button variant="outline-danger" onClick={()=>{HandleDeleteBtn(props.allComments,props.dataForComment,props.upComments)}}>
           Delete
         </Button>
       );
     }
     return <></>;
   };
-  const handleDeleteBtn = () => {
-    // let userEmail=props.dataForComment.email;
-    const index = props.allComments.findIndex(
-      (element) => element.email === props.dataForComment.email
-    );
-    const updatedArray = [...props.allComments];
-    updatedArray.splice(index, 1);
-    props.upComments(updatedArray);
-  };
-
-  //function to conditionally render editPost Comment
-  //Only if our user Email matches with the comment email
+  
+  //function to conditionally render editPost 
   const editComment = () => {
-    let userEmail = findEmail(userid);
+    let userEmail = FindEmail(userid,props.users);
 
     if (props.dataForComment.email === userEmail) {
       return (
-        <Button variant="outline-info" onClick={handleEditBtn}>
+        <Button variant="outline-info" onClick={()=>{HandleEditBtn(updateEditFlag)}}>
           EDIT
         </Button>
       );
     }
     return <></>;
   };
+
   //After Pressing Edit Comment, update Comment Button Appears
-  //When UpdateButton is Pressed this function is called
   const updateComment = () => {
-    let userEmail = findEmail(userid);
+    let userEmail = FindEmail(userid, props.users);
 
     if (props.dataForComment.email === userEmail) {
       return (
-        <Button variant="outline-warning" onClick={handleUpdateBtn}>
+        <Button variant="outline-warning" onClick={()=>{HandleUpdateBtn(props.dataForComment,updateEditFlag,commentBody,props.allComments)}}>
           UPDATE
         </Button>
       );
     }
   };
-  //Based on This state Flag we conditionally Render Buttons
-  const handleEditBtn = () => {
-    updateEditFlag(false);
-  };
-  const handleUpdateBtn = () => {
-    updateEditFlag(true);
-    props.dataForComment.body = commentBody;
-  };
 
-  //Render Comment Text
   const renderCommentText = () => {
     return (
       <>
@@ -102,7 +82,7 @@ export default function Comments(props) {
             <input
               type="text"
               className="form-control"
-              placeholder="Type Your Comment Name"
+              placeholder="Type Your Comment"
               value={commentBody}
               onChange={handleCommentBody}
             ></input>
@@ -112,14 +92,7 @@ export default function Comments(props) {
     );
   };
 
-  const findEmail = (idofUser) => {
-    for (let element of props.users) {
-      if (idofUser === element.id) {
-        return element.email;
-      }
-    }
-    return "";
-  };
+ 
 
   return (
     <>

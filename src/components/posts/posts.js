@@ -1,71 +1,44 @@
-//Imports react Dependencies
-import { Link } from "react-router-dom";
 import { useContext } from "react";
 
-//Imports PostContext Module to use post data here
-import PostContext from "../../context/Posts/PostContext";
 import { AuthContext } from "../../context/Auth/authContext";
+import PostContext from "../../context/Posts/PostContext";
 
-//Imports External and Internal UI Dependencies
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/posts.css";
 import Button from "react-bootstrap/Button";
+import 'react-toastify/dist/ReactToastify.css';
+
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { onClickDeletePost,editPost,commentPostButton} from "../../helper/posts/PostHelper";
 
 export default function Posts(props) {
   //Fetches Post Data From Post Context
   const FetchedDataFromPostContext = useContext(PostContext);
   const postData = FetchedDataFromPostContext.postData;
   const updatePostData = FetchedDataFromPostContext.updatePost;
-  //Login Credentials Redemption from context
   const { userCredentials } = useContext(AuthContext);
-  //Gets current ID of the user
   const id = userCredentials.id;
-  //function to conditionally render editPost Button
-  const editPost = () => {
-    if (props.dataForPost.userId === id) {
-      return (
-        <Link to="/edit-post" state={props.dataForPost}>
-          <Button variant="outline-info">EDIT</Button>
-        </Link>
-      );
-    }
-    return <></>;
-  };
-  //When Delete Button is pressend The post is deleted
-  function onClickDeletePost() {
-    const index = postData.findIndex(
-      (element) => element.id === props.dataForPost.id
-    );
-    alert("Index " + index);
-    const updatedArray = [...postData];
-    updatedArray.splice(index, 1);
-    updatePostData(updatedArray);
-  }
+  
   //function to conditionally render deletePost Button
   const deletePostButton = () => {
     if (props.dataForPost.userId === id) {
       return (
-        <Button onClick={onClickDeletePost} variant="outline-danger">
+        <Button onClick={()=>{onClickDeletePost(postData,props.dataForPost.id,updatePostData)}} variant="outline-danger">
           Delete
         </Button>
       );
     }
     return <></>;
   };
+  
 
-  //Handler Function For Comment Button
-  //Moves To Comments Page and Sends
-  //UserID and PostID as State Variables
-  const commentPostButton = () => {
-    return (
-      <Link to="/comments" state={{ postid: props.dataForPost.id, userid: id }}>
-        <Button variant="outline-info">Comments</Button>
-      </Link>
-    );
-  };
+  
 
   return (
     <>
+    <ToastContainer />
       <div className="row justify-content-center upper-div">
         <div className="wrapping-div col-8 justify-content-center">
           <div className="row justify-content-center">
@@ -91,9 +64,9 @@ export default function Posts(props) {
           </div>
 
           <div className="row justify-content-center user-control">
-            <div className="col-3">{commentPostButton()}</div>
+            <div className="col-3">{commentPostButton(props.dataForPost,id)}</div>
 
-            <div className="col-2">{editPost()}</div>
+            <div className="col-2">{editPost(props.dataForPost,id)}</div>
 
             <div className="col-3">{deletePostButton()}</div>
           </div>

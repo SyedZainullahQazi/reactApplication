@@ -8,19 +8,15 @@ import Button from 'react-bootstrap/Button';
  export default function NavbarApp()
 {
     const navigate=useNavigate();
-      //Login Credentials Redemption from context
     const {logoutUser } = useContext(AuthContext);
     //Handle Click for My Posts button
     const onClickMyPosts = () => {
     navigate("/myposts");
      };
-    //When Write Post Button is Clicked
-    //We navigate to writepost Page
-    function onClickWritePost() {
+    const onClickWritePost=()=> {
     navigate("/writepost");
     }
-    //
-    function onClickAllPosts()
+    const onClickAllPosts=()=>
     {
         navigate("/posts");
     }

@@ -1,39 +1,27 @@
-//Imports the Hooks from React Core
+import { ToastContainer, toast } from 'react-toastify';
 import { useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-//Imports components
-import PostContext from "../../context/Posts/PostContext.js";
 import { AuthContext } from "../../context/Auth/authContext.js";
 import NavbarApp from "../navigationBar.js";
+import PostContext from "../../context/Posts/PostContext.js";
 
-//Imports The internal and external Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/editPost.css";
 import Button from "react-bootstrap/Button";
-
+import 'react-toastify/dist/ReactToastify.css';
+ 
 export default function ComposePost(props) {
-  const navigate = useNavigate();
-
-  //Fetches Post data from Context API
-  //and assigns variable the value assets of PostContext
   const ContextFetchedPostData = useContext(PostContext);
   const postData = ContextFetchedPostData.postData;
-  const updatePostData = ContextFetchedPostData.updatePost;
-
-  //Login Credentials Redemption from context
+  const updatePost = ContextFetchedPostData.updatePost;
   const { userCredentials } = useContext(AuthContext);
   const userid = userCredentials.id;
-
-  //Posts page sents state object was sent through to={state:{}};
-  //stateData holds posts attributes, id,title,body,userid etc
   const location = useLocation();
+  //stateData holds post structure
   const stateData = location.state;
-
-  //Flag Truth Value Represents : Write Post
-  //Flag Flase Value Represents : Edit Post
   let flag = props.flag;
 
   //Using Formik Instead of useState
@@ -42,23 +30,19 @@ export default function ComposePost(props) {
       title: flag ? "" : stateData ? stateData.title : "",
       article: flag ? "" : stateData ? stateData.body : "",
     },
-
-    //Validation On Title and Post Content
     validationSchema: Yup.object({
       title: Yup.string().min(10, "Must be 10 Chars").required("Tis Required"),
       article: Yup.string()
         .min(10, "Must be 10 Chars")
         .required("Tis Required"),
     }),
-
-    //Update the Values on Submit
     onSubmit: (values) => {
       if (flag) {
         const updatedArr = [...postData];
         const newId =
           postData.reduce((maxId, currentObj) => {
             return currentObj.id > maxId ? currentObj.id : maxId;
-          }, -Infinity) + 1;
+          }, -Infinity) + 1;  
 
         updatedArr.unshift({
           userId: userid,
@@ -66,9 +50,8 @@ export default function ComposePost(props) {
           title: values.title,
           body: values.article,
         });
-        updatePostData(updatedArr);
-
-        alert("Successfully Posted!!");
+        updatePost(updatedArr);
+        toast.success("Successfully Posted!!");
       } else {
         for (const element of postData) {
           if (element.id === stateData.id) {
@@ -76,9 +59,10 @@ export default function ComposePost(props) {
             element.title = values.title;
           }
         }
-        alert("Comment Updated Successfully");
+        toast.success("Post Updated!!");
       }
-      navigate("/posts");
+      values.title="";
+      values.article="";
     },
   });
 
@@ -90,9 +74,9 @@ export default function ComposePost(props) {
   };
 
   //Conditonal rendering of the Html/JSX on page
-  if (userCredentials) {
     return (
       <>
+      <ToastContainer />
       {<NavbarApp/>}
         <div className="row justify-content-center upper-div">
           <div className="wrapping-div col-8 justify-content-center">
@@ -147,7 +131,4 @@ export default function ComposePost(props) {
         </div>
       </>
     );
-  } else {
-    navigate("/");
-  }
 }
